@@ -138,7 +138,7 @@ function processMdxForSearch(content: string): ProcessedMdx {
   // Remove all MDX elements from markdown
   const mdTree = filter(
     mdxTree,
-    (node) =>
+    (node: { type: string }) =>
       ![
         'mdxjsEsm',
         'mdxJsxFlowElement',
@@ -331,11 +331,12 @@ async function generateEmbeddings() {
 
       // We use checksum to determine if this page & its sections need to be regenerated
       if (!shouldRefresh && existingPage?.checksum === checksum) {
-        const existingParentPage = existingPage?.parentPage as Singular<
+        const existingParentPage = existingPage?.parentPage as unknown as Singular<
           typeof existingPage.parentPage
         >
 
         // If parent page changed, update it
+        /*@ts-ignore-next-line*/
         if (existingParentPage?.path !== parentPath) {
           console.log(`[${path}] Parent page has changed. Updating to '${parentPath}'...`)
           const { error: fetchParentPageError, data: parentPage } = await supabaseClient
